@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import javax.xml.transform.sax.TemplatesHandler;
 
 public class TileManager extends TileInfo{
@@ -45,10 +48,40 @@ public class TileManager extends TileInfo{
 
     }
 
+    public void loadWorldMap(final String _mapname){//Used to load map from the raw folder in res
+        try {
+            inputStream = gameView.getContext().getResources().openRawResource(
+                    gameView.getContext().getResources().getIdentifier(
+                            _mapname,"raw", gameView.getContext().getPackageName()));
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            int column = 0;
+            int row = 0;
+            while (column < 05 && row < 50){
+                String line = bufferedReader.readLine();
+
+                while (column < 50){
+                    //Splits the line to read the data from the text
+                    String[] numbers = line.split(" ");
+                    int num = Integer.parseInt(numbers[column]);
+                    worldTileNumLayer1[column][row]= num;
+                    column ++;
+                }
+                if (column == 50){
+                    column = 0;
+                    row ++;
+                }
+            }
+            bufferedReader.close();
+        }catch (Exception e){
+        }
+    }
+
     public void setupTileInfo(){
         setupTilesheet();
         layer1[0] = new TileInfo();
         layer1[0].tileImg = allTileImgs[1];//allTileImgs[0] is an empty image
+        layer1[2] = new TileInfo();
+        layer1[2].tileImg = allTileImgs[2];
     }
     public void setupTilesheet(){
         Bitmap tilesheet;

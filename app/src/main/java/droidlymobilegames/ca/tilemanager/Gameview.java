@@ -81,18 +81,25 @@ public class Gameview extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int pointerID = event.getPointerId(event.getActionIndex());
-        switch (event.getActionMasked()) {
+        switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_POINTER_DOWN:
-                screenTouched = true;
-                return true;
+            case MotionEvent.ACTION_MOVE:
+                screenX = ((int)event.getX() + 25) / 100;
+                screenY = (int)event.getY() / 100;
+                posX = (screenX + ((posX -   screenX) / 100)) - (posX / 100);
+                posY = screenY + (posY/ 100);
+                if (posX > 0) {
+                    tileManager.worldTileNumLayer1[(int)posX][(int)posY] = 2;
+                }
+                break;
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                screenTouched = false;
-                posX = 0;
+                break;
         }
-        return super.onTouchEvent(event);
+       /* return super.onTouchEvent(event);*/
+        return true;
     }
+
+
 
     public int getDisplayWidth(){
         return getContext().getResources().getDisplayMetrics().widthPixels;
